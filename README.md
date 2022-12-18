@@ -528,7 +528,7 @@ Invoke-Mimikatz -Command '"lsadump::lsa /patch"' -Computername <computername>
 
 # Domain persistence
 ## Golden ticket
-Golden tickets zijn nagemaakte TGT tickets. TGT tickets worden gebruikt om TGS tickets aan te vragen bij de KDC(DC). De kerberos Golden Ticket is een valid TGT omdat deze ondertekend is door het KRBTGT account. Als je de hash van de KRBTGT account kan achterhalen door de hashes te dumpen op de Domain controller en deze hash niet wijzigt is het mogelijk om weer een TGT aan te vragen bij de volgende penetratietest en volledige toegang tot het domein te verkrijgen.
+Golden tickets are counterfeit TGT tickets. TGT tickets are used to request TGS tickets from the KDC(DC). The kerberos Golden Ticket is a valid TGT because it is signed by the KRBTGT account. If you can find out the hash of the KRBTGT account by dumping the hashes on the Domain controller and do not change this hash it is possible to request a TGT again at the next penetration test and gain full access to the domain.
 
 https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-golden-tickets
 
@@ -555,7 +555,7 @@ Get-wmiobject -Class win32_operatingsystem -ComputerName <computername>
 ```
 
 ## Silver ticket
-Silver tickets zijn nagemaakte TGS tickets. Omdat de ticket is nagemaakt op de workstation is er geen communicatie met de DC. Eeen silver ticket kan worden aangemaakt met de service account hash of computer account hash.
+Silver tickets are counterfeit TGS tickets. Because the ticket is counterfeited at the workstation, there is no communication with the DC. A silver ticket can be created using the service account hash or computer account hash.
 
 https://adsecurity.org/?p=2011
 https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-silver-tickets
@@ -597,7 +597,7 @@ Get-wmiobject -Class win32_operatingsystem -ComputerName <target>
 ```
 
 ## Skeleton key
-De skeleton key attack is een aanval dat malware in het geheugen laad van de domain controller. Waarna het mogelijk is om als elke user the authenticeren met een master wachtwoord. Als je dit met mimikatz uitvoert is dit wachwoord 'mimikatz'. Dit laad een grote security gat waarbij dit wordt uitgevoerd! Voer dit dus niet uit in een productieomgeving zonder goed te overleggen met de klant. Om deze aanval te stoppen moet de domain controller worden herstart.
+The skeleton key attack is an attack that loads malware into the memory of the domain controller. After which it is possible to authenticate as any user with a master password. If you do this with mimikatz, this is the password "mimikatz." This load a large security hole where this is performed! Do not run this in a production environment without consulting with the customer. To stop this attack, the domain controller must be rebooted.
 
 https://pentestlab.blog/2018/04/10/skeleton-key/
 
@@ -607,7 +607,7 @@ Invoke-MimiKatz -Command '"privilege::debug" "misc::skeleton"' -Computername <ta
 ```
 
 ## DSRM
-De Directory Services Restore Mode is een boot option waarin een domain controller kan worden opgestart zodat een administrator reparaties of een recovery kan uitvoeren op de active directory database. Dit wachtwoord wordt ingesteld tijdens het installeren van de domain controller en wordt daarna bijna nooit gewijzigd. Door de login behavior aan te passen van dit lokale account is het mogelijk om remote toegang te verkrijgen via dit account, een account waarvan het wachtwoord bijna nooit wijzigd! Pas op, dit tast de security van de domain controller aan!
+The Directory Services Restore Mode is a boot option in which a domain controller can be booted so that an administrator can perform repairs or a recovery on the active directory database. This password is set during the installation of the domain controller and is almost never changed afterwards. By changing the login behavior of this local account it is possible to obtain remote access via this account, an account whose password has almost never changed! Beware, this affects the security of the domain controller!
 
 #### Dump DSRM password - dumps local users
 look for the local administrator password
@@ -631,9 +631,9 @@ Invoke-Mimikatz -Command '"sekurlsa::pth /domain:<computer> /user:Administrator 
 ```
 
 ## Custom SSP - Track logons
-Het is mogelijk om met een custom Security Support Provider (SSP) alle logons op een computer bij te houden. Een SSP is een DDL. Een SSP is een DLL waarmee een applicatie een geverifieerde verbinding kan verkrijgen. Sommige SSP-pakketten van Microsoft zijn: NTLM, Kerberos, Wdigest, credSSP. 
+A custom Security Support Provider (SSP) can keep track of all logons on a computer. An SSP is a DDL. An SSP is a DLL by which an application can obtain an authenticated connection. Some Microsoft SSP packages are: NTLM, Kerberos, Wdigest, credSSP.
 
-Mimikatz biedt een aangepaste SSP - mimilib.dll aan. Deze SSP registreert lokale aanmeldingen, serviceaccount- en computeraccountwachtwoorden in platte tekst op de doelserver.
+Mimikatz offers a custom SSP - mimilib.dll. This SSP records local logins, service account and computer account passwords in plain text on the target server.
 
 #### Mimilib.dll
 Drop mimilib.dll to system32 and add mimilib to HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Security Packages
@@ -652,7 +652,9 @@ Invoke-Mimikatz -Command ‘”misc:memssp”’
 
 ## ACL
 ### AdminSDHolder
-De AdminSDHolder container is een speciale AD container met default security permissies die gebruikt worden als template om beveiligde AD gebruikers en groepen (Domain Admins, Enterprise Admins etc.) te beveiligen en te voorkomen dat hier onbedoeld wijzingen aan worden uitgevoerd. Nadater er toegang is verkregen tot een DA is het mogelijk om deze container aan te passen voor persistence.
+A custom Security Support Provider (SSP) can keep track of all logons on a computer. An SSP is a DDL. An SSP is a DLL by which an application can obtain an authenticated connection. Some Microsoft SSP packages are: NTLM, Kerberos, Wdigest, credSSP.
+
+Mimikatz offers a custom SSP - mimilib.dll. This SSP records local logins, service account and computer account passwords in plain text on the target server.
 
 https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/how-to-abuse-and-backdoor-adminsdholder-to-obtain-domain-admin-persistence
 
@@ -696,7 +698,7 @@ Set-DomainUserPassword -Identity <username> -AccountPassword (ConvertTo-SecureSt
 ```
 
 ### DCsync
-Bij een DCSync aanval immiteren we een DC om de wachtwoorden te achterhalen via domain replication. Hiervoor hebben we bepaalde rechten nodig op de domain controller.
+In the event of a DCSync attack, we impersonate a DC to find out the passwords via domain replication. For this we need certain rights on the domain controller.
 
 https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/dump-password-hashes-from-domain-controller-with-dcsync
 https://blog.stealthbits.com/what-is-dcsync-an-introduction/
@@ -795,7 +797,7 @@ Get-RemoteCachedCredential -Computername <computername> -Verbose
 ```
 # Domain Privilege escalation
 ## Kerberoast
-Kerberoasting een technique waarbij de wachtwoorden van service accounts worden gekraakt. Kerberoasting is voornamelijk efficient indien er user accounts als service accounts worden gebruikt. Een TGS ticket kan worden aangevraagd voor deze user, waarbij de TGS versleuteld is met de NTLM hash van de plaintext wachtwoord van de gebruiker. Als de service account een user account is welke zelf is aangemaakt door de beheerder is de kans groter dat deze ticket te kraken is, en dus het wachtwoord wordt achterhaalt voor de service. Deze TGS ticket kan offline gekraakt worden. Voor de aanval word de kerberoas[https://github.com/nidem/kerberoast] repositorie van Nidem gebruikt.
+
 #### Find user accounts used as service accounts
 ```
 . ./GetUserSPNs.ps1
