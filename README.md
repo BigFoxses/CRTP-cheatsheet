@@ -927,7 +927,7 @@ Hashcat -a 0 -m 18200 hash.txt rockyou.txt
 ```
 
 ## Unconstrained Delegation
-
+Unconstrained delegation is a privilege that can be granted to users or computers, this almost always happens to computers with services such as ISS and MSSQL. These services typically require access to a backend database on behalf of the authenticated user. When a user authenticates on a computer with unlimited Kerberos delegation privilege enabled, the user's authenticated TGT ticket is stored in that computer's memory. If your administrator has access to this server, it is possible to dump all TGT tickets from memory.
 
 #### Discover domain computers which have unconstrained delegation
 Domain Controllers always show up, ignore them
@@ -954,7 +954,7 @@ Invoke-Mimikatz -Command '"kerberos::ptt <kirbi file>"'
 ```
 
 ## Constrained Delegation
-Als je over een account of computer beschikt met de constrained delegation privilege is het mogelijk om je voor te doen als elk andere gebruiker en jezelf te authentiseren naar een service waar de gebruiker mag delegeren.
+If you have an account or computer with the constrained delegation privilege, it is possible to impersonate any other user and authenticate yourself to a service where the user may delegate.
 ### Enumerate
 #### Enumerate users with contrained delegation enabled
 ```
@@ -1004,7 +1004,7 @@ Invoke-Mimikatz -Command '"lsadump::dcsync /user:<shortdomain>\krbtgt"'
 ```
 
 ## DNS Admins
-Indien je over een gebruiker bezit die lid is van de 'DNS admin' is het mogelijk om verschillende aanvallen uit te voeren op de DNS server (Meestal Domain Controller) Het is mogelijk om hier een reverse shell mee te krijgen, maar dit legt heel het DNS verkeer plat binnen het domein aangezien dit de DNS service bezighoudt! Voor meer informatie zie [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise]
+If you own a user who is a member of the 'DNS admin' it is possible to make various attacks on the DNS server (usually Domain Controller) It is possible to get a reverse shell with this, but this puts the whole DNS traffic flat within the domain since this is the DNS service! For more information see [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise]
 #### Enumerate member of the DNS admin group
 ```
 Get-NetGRoupMember “DNSAdmins”
