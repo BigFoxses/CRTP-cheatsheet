@@ -797,7 +797,7 @@ Get-RemoteCachedCredential -Computername <computername> -Verbose
 ```
 # Domain Privilege escalation
 ## Kerberoast
-
+Kerberoasting is a technique where the passwords of service accounts are cracked. Kerberoasting is mainly efficient if user accounts are used as service accounts. A TGS ticket can be requested for this user, where the TGS is encrypted with the NTLM hash of the plaintext password of the user. If the service account is a user account that was created by the administrator itself, it is more likely that this ticket will be cracked, and therefore the password will be retrieved for the service. This TGS ticket can be cracked offline. The Kerberoas[https://github.com/nidem/kerberoast] repository of Nidem is used for the attack.
 #### Find user accounts used as service accounts
 ```
 . ./GetUserSPNs.ps1
@@ -835,7 +835,8 @@ python.exe .\tgsrepcrack.py .\10k-worst-pass.txt .\2-40a10000-student1@MSSQLSvc~
 ```
 
 ## AS-REPS Roasting
-AS-REPS roasting is een technique waarbij het wachtwoord achterhaald kan worden omdat de 'Do not require Kerberos preauthentication property' is aangezet, oftewel kerberos preauthentication staat uit. Een aanvaller kan de eerste stap van authenticatie overslaan en voor deze gebruiker een TGT aanvragen, welke vervolgens offline gekraakt kan worden.
+
+AS-REPS roasting is a technique where the password can be retrieved because the 'Do not require Kerberos preauthentication property' is turned on, or kerberos preauthentication is off. An attacker can skip the first step of authentication and request a TGT for this user, which can then be cracked offline.
 #### Enumerating accounts with kerberos preauth disabled
 ```
 . .\Powerview_dev.ps1
@@ -846,7 +847,7 @@ Get-DomainUser -PreauthNotRequired -verbose | select samaccountname
 ```
 
 #### Enumerate permissions for group
-Met genoeg rechten(GenericWrite of GenericAll) is het mogelijk om kerberos preauth uit te schakelen.
+With enough permissions (GenericWrite or GenericAll) it is possible to disable kerberos preauth.
 ```
 Invoke-ACLScanner -ResolveGUIDS | Where-Object {$_.IdentityReference -match “<groupname>”}
 Invoke-ACLScanner -ResolveGUIDS | Where-Object {$_.IdentityReference -match “<groupname>”} | select IdentityReference, ObjectDN, ActiveDirectoryRights | fl
@@ -877,7 +878,7 @@ Hashcat -a 0 -m 18200 hash.txt rockyou.txt
 ```
 
 ## Set SPN
-Met genoeg rechten (GenericALL en GenericWrite) is het mogelijk om zelf de Service Principle Name attribute aan een gebruiker toe te voegen. Deze kan dan worden gekraakt met behulp van kerberoasting.
+With enough permissions (GenericALL and GenericWrite) it is possible to add the Service Principle Name attribute to a user yourself. This can then be cracked using kerberoasting.
 
 #### Enumerate permissions for group on ACL
 ```
@@ -926,7 +927,7 @@ Hashcat -a 0 -m 18200 hash.txt rockyou.txt
 ```
 
 ## Unconstrained Delegation
-Unconstrained delegation is een privilege welke kan worden toegekent aan gebruikers of computers, dit gebeurt bijna altijd bij computers met services zoals ISS en MSSQL. Deze services hebben meestal toegang nodig tot een backend database namens de geverifieerde gebruiker. Wanneer een gebruiker zich verifieert op een computer waarop onbeperkt Kerberos-delegatierecht is ingeschakeld, wordt het geverifieerde TGT-ticket van de gebruiker opgeslagen in het geheugen van die computer. Als je administrator toegang hebt tot deze server, is het mogelijk om alle TGT tickets uit het geheugen te dumpen.
+
 
 #### Discover domain computers which have unconstrained delegation
 Domain Controllers always show up, ignore them
